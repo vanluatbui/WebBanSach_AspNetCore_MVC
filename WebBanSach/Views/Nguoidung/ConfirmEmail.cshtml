@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Khôi phục mật khẩu";
+    Layout = null;
+}
+
+<h2>Khôi phục mật khẩu của bạn</h2>
+<hr />
+<h2>Hệ thống đã gửi một mã xác minh đến email @ViewBag.Email để giúp bạn khôi phục mật khẩu. Kiểm tra Email và xác nhận.</h2>
+
+<table align="center">
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        <tr style="height:40px">
+            <td> Nhập mã xác minh : </td>
+            <td>
+                @Html.TextBox("EmailConfirm")
+                <span style="color:red; font-style:italic"> @ViewData["Loi1"] </span>
+            </td>
+        </tr>
+        <tr style="height:40px">
+            <td></td>
+            <td>
+                <input type="Submit" value="Xác minh" />
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    @Html.ActionLink("Trở về", "Dangnhap")
+</div>
+
+

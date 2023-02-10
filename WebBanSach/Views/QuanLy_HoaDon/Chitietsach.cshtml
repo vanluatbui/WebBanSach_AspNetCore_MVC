@@ -1,0 +1,82 @@
+﻿@model WebBanSach.Models.Sach
+
+@{
+    ViewBag.Title = "Chitietsach";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<div>
+    <h4>THÔNG TIN SÁCH</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TenSach)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenSach)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GiaBan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GiaBan)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoTa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoTa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnhBia)
+        </dt>
+
+        <dd>
+
+            <img src="@Url.Content("~/Hinhsanpham/"+  Model.AnhBia)" width="120px" />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NgayCapNhat)
+        </dt>
+
+        <dd>
+            @String.Format("{0:dd/MM/yyy}", Model.NgayCapNhat)
+
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SoLuongTon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SoLuongTon)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaChuDe)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(modelItem => Model.ChuDe.TenChuDe)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaNXB)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(modelItem => Model.NhaXuatBan.TenNXB)
+        </dd>
+
+    </dl>
+</div>
+<p>
+   <a href=@ViewBag.Link_Back>TRỞ VỀ</a>
+</p>

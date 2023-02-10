@@ -1,0 +1,94 @@
+﻿@model List<DonDatHang>
+
+@{
+    ViewBag.Title = "Hoadon";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<h2>QUẢN LÝ DANH MỤC HOÁ ĐƠN</h2>
+
+<input type="text" size="50" placeholder="Nhập ID hoá đơn cần tìm kiếm" id="Search"> <button onclick="TimKiem_QuanLyHoaDon()">Tìm Kiếm</button>
+<br />
+<h2>@ViewBag.KetQuaTimKiem</h2>
+
+<table class="table">
+    <tr>
+        <th width="250">
+            MÃ HOÁ ĐƠN
+        </th>
+        <th width="400">
+            TÌNH TRẠNG THANH TOÁN
+        </th>
+        <th width="400">
+            TÌNH TRẠNG GIAO HÀNG
+        </th>
+        <th width="400">
+            NGÀY HẸN GIAO HÀNG
+        </th>
+        <th width="400">
+            NGÀY ĐÃ ĐẶT HÀNG
+        </th>
+        <th width="400">
+            MÃ KHÁCH HÀNG ĐẶT HÀNG
+        </th>
+        <th width="350"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaDonHang)
+            </td>
+            <td>
+                @*@Trucate(item.Mota,100)*@
+                @{
+                    byte tinhtrang_thanhtoan = item.TinhTrangThanhToan;
+                    if (tinhtrang_thanhtoan == 0)
+                    {
+                       @Html.ActionLink("Chưa thanh toán", "CapNhatHoaDon_ThanhToan", new { id = item.MaDonHang}, new {@style="color:red"})
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Đã thanh toán", "CapNhatHoaDon_ThanhToan", new { id = item.MaDonHang}, new {@style="color:green"})
+                    }
+                }
+            </td>
+            <td>
+                @{
+                    byte tinhtrang_giaohang = item.TinhTrangGiaoHang;
+                    if (tinhtrang_giaohang == 0)
+                    {
+                        @Html.ActionLink("Chưa giao hàng", "CapNhatHoaDon_GiaoHang", new { id = item.MaDonHang}, new {@style="color:red"})
+                    }
+                    else
+                    {
+                          @Html.ActionLink("Đã giao hàng", "CapNhatHoaDon_GiaoHang", new { id = item.MaDonHang}, new {@style="color:green"})
+                    }
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayGiao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayDat)
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.MaKH)
+            </td>
+            <td>
+                @Html.ActionLink("Chi tiết", "Chitiethoadon", new { id = item.MaDonHang }) |
+                @Html.ActionLink("Xóa", "Xoahoadon", new { id = item.MaDonHang })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<partial name="_Paging"/>
+
+<style>
+    .Menutran li {
+        display: inline
+    }
+</style>

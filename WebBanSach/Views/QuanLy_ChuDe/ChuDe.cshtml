@@ -1,0 +1,53 @@
+﻿@model List<ChuDe>
+
+@{
+    ViewBag.Title = "Chude";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<h2>QUẢN LÝ DANH MỤC CHỦ ĐỀ</h2>
+
+<input type="text" size="50" placeholder="Nhập tên chủ đề cần tìm kiếm" id="Search">
+<button onclick="TimKiem_QuanLyChuDe()">Tìm Kiếm</button>
+<br />
+<h2>@ViewBag.KetQuaTimKiem</h2>
+
+<p>
+    @Html.ActionLink("THÊM MỚI", "Themmoichude")
+</p>
+<table class="table">
+    <tr>
+        <th width="250">
+            MÃ CHỦ ĐỀ
+        </th>
+        <th width="400">
+            TÊN CHỦ ĐỀ
+        </th>
+        <th width="350"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaChuDe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenChuDe)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Suachude", new { id = item.MaChuDe }) |
+                @Html.ActionLink("Xóa", "Xoachude", new { id = item.MaChuDe })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<partial name="_Paging" />
+
+<style>
+    .Menutran li {
+        display: inline
+    }
+</style>

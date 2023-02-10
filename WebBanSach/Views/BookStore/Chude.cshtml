@@ -1,0 +1,7 @@
+﻿
+<div class="list-group">
+    @foreach (var chude in Model)
+    {
+        <a href="@Url.Action("Sachtheochude","BookStore", new {id = chude.MaChuDe})" class="list-group-item"> @chude.TenChuDe</a>
+    }
+</div>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebBanSach", "WebBanSach\WebBanSach.csproj", "{DB5FC4B1-B848-4852-B43B-863758E775EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB5FC4B1-B848-4852-B43B-863758E775EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5FC4B1-B848-4852-B43B-863758E775EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5FC4B1-B848-4852-B43B-863758E775EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5FC4B1-B848-4852-B43B-863758E775EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5D4932D3-DE14-4723-8289-2C5CAA9CA31E}
+	EndGlobalSection
+EndGlobal

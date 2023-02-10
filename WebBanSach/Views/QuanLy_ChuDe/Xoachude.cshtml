@@ -1,0 +1,38 @@
+﻿@model WebBanSach.Models.ChuDe
+
+@{
+    ViewBag.Title = "Xoachude";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<h2>XÁC NHẬN THÔNG TIN XÓA</h2>
+
+<h4 style="color:red; font-style:italic">Bạn chắc chắn xóa chủ đề này?</h4>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MaChuDe)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaChuDe)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TenChuDe)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenChuDe)
+        </dd>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Xóa" class="btn btn-default" /> |
+                @Html.ActionLink("Trở về", "Chude")
+            </div>
+        }
+</div>

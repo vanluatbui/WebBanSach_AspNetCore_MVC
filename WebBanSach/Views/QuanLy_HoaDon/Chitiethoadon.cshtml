@@ -1,0 +1,62 @@
+﻿@model List<ChiTiet_DonDatHang>
+@using Microsoft.AspNetCore.Http.Extensions;
+
+@{
+    ViewBag.Title = "Chitiethoadon";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<div>
+    <h4>THÔNG TIN HOÁ ĐƠN</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @{
+            int count = 1;
+        foreach (var item in Model)
+        {
+            <h5>
+                * SẢN PHẨM THỨ @count :
+            </h5>
+            <dt>
+                @Html.DisplayNameFor(ModelItem => item.MaDonHang)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(ModelItem => item.MaDonHang)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(ModelItem => item.MaSach)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(ModelItem => item.MaSach) -
+                @Html.ActionLink("Xem chi tiết sản phẩm", "Chitietsach","QuanLy_HoaDon", new { id = item.MaSach , strURL= Context.Request.GetDisplayUrl()})
+                <dd>
+                    @Html.DisplayFor(ModelItem => item.DonGia)
+                </dd>
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(ModelItem => item.SoLuong)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(ModelItem => item.SoLuong)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(ModelItem => item.DonGia)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(ModelItem => item.DonGia)
+            </dd>
+            count++;
+          }
+         }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Trở về", "Hoadon","QuanLy_HoaDon")
+</p>

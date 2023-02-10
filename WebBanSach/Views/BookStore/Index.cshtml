@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<h2>CÁC SẢN PHẨM HIỆN CÓ CỦA WEB BÁN SÁCH </h2>
+
+<input type="text" size="50" placeholder="Nhập tên sách cần tìm kiếm" id="Search">
+<button onclick="TimKiem_Index()">Tìm Kiếm</button>
+<br />
+<h2>@ViewBag.KetQuaTimKiem</h2>
+
+<div class="row">
+    @foreach (var sach in Model)
+    {
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <a href="@Url.Action("Chitietsach", "BookStore", new { id = sach.MaSach})">
+                    <img alt="@sach.TenSach" src="~/Hinhsanpham/@sach.AnhBia" width="200" />
+                    <div>
+                        <br />
+                        <h4 style="text-align:center">
+                            @sach.TenSach
+                        </h4>
+                        <p></p>
+                    </div>
+                </a>
+                <div class="ratings">
+                    <p class="pull-right">15 reviews</p>
+                    <p>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star">
+                        </span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<partial name="_Paging"/>
+
+<style>
+    .Menutran li {
+        display: inline
+    }
+</style>
+

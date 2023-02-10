@@ -1,0 +1,65 @@
+﻿@model List<NhaXuatBan>
+
+@{
+    ViewBag.Title = "Nhaxuatban";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<h2>QUẢN LÝ DANH MỤC NHÀ XUẤT BẢN</h2>
+
+<input type="text" size="50" placeholder="Nhập tên nhà xuất bản cần tìm kiếm" id="Search">
+<button onclick="TimKiem_QuanLyNXB()">Tìm Kiếm</button>
+<br />
+<h2>@ViewBag.KetQuaTimKiem</h2>
+
+<p>
+    @Html.ActionLink("THÊM MỚI", "Themmoinhaxuatban")
+</p>
+<table class="table">
+    <tr>
+        <th width="250">
+            MÃ NHÀ XUẤT BẢN
+        </th>
+        <th width="400">
+            TÊN NHÀ XUẤT BẢN
+        </th>
+        <th width="400">
+            ĐỊA CHỈ
+        </th>
+        <th width="400">
+            ĐIỆN THOẠI
+        </th>
+        <th width="350"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaNXB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenNXB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DienThoai)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Suanhaxuatban", new { id = item.MaNXB }) |
+                @Html.ActionLink("Xóa", "Xoanhaxuatban", new { id = item.MaNXB })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<partial name="_Paging"/>
+
+<style>
+    .Menutran li {
+        display: inline
+    }
+</style>

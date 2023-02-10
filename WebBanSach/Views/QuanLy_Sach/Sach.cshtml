@@ -1,0 +1,89 @@
+﻿@model List<Sach>
+
+@{
+    ViewBag.Title = "Sach";
+    Layout = "~/Views/Shared/_LayoutPAdmin.cshtml";
+}
+
+<h2>QUẢN LÝ DANH MỤC SÁCH</h2>
+
+<input type="text" size="50" placeholder="Nhập tên sách cần tìm kiếm" id="Search"> <button onclick="TimKiem_QuanLySach()">Tìm Kiếm</button>
+<br />
+<h2>@ViewBag.KetQuaTimKiem</h2>
+
+<p>
+    @Html.ActionLink("THÊM MỚI", "Themmoisach")
+</p>
+<table class="table">
+    <tr>
+        <th width="250">
+            TÊN SÁCH
+        </th>
+        <th width="400">
+            MÔ TẢ
+        </th>
+        <th width="100">
+            GIÁ BÁN
+        </th>
+        <th width="200">
+            ẢNH BÌA
+        </th>
+        <th width="200">
+            NGÀY CẬP NHẬT
+        </th>
+        <th width="100">
+            SỐ LƯỢNG
+        </th>
+        <th width="150">
+            CHỦ ĐỀ
+        </th>
+        <th width="150">
+            NHÀ XUẤT BẢN
+        </th>
+        <th width="350"></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenSach)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoTa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GiaBan)
+            </td>
+            <td>
+                <img width="200" src="~/Hinhsanpham/@item.AnhBia" />
+            </td>
+            <td>
+                @String.Format("{0:dd/MM/yyyy}", item.NgayCapNhat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuongTon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChuDe.TenChuDe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NhaXuatBan.TenNXB)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Suasach" ,new { id = item.MaSach }) |
+                @Html.ActionLink("Chi tiết", "Chitietsach", new { id = item.MaSach }) |
+                @Html.ActionLink("Xóa", "Xoasach", new { id = item.MaSach })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<partial name="_Paging" />
+
+<style>
+    .Menutran li {
+        display: inline
+    }
+</style>
