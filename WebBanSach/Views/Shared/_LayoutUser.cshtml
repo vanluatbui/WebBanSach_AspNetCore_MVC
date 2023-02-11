@@ -52,11 +52,17 @@
                     <li>
                         <a href="#">KHUYẾN MÃI</a>
                     <li>
-                        <a href="@Url.Action("Dangky","Nguoidung")">ĐĂNG KÝ</a>
-                    </li>
+                         @if (ViewBag.TaiKhoan == null)
+                            {
+                                <a href="@Url.Action("Dangky","Nguoidung")">ĐĂNG KÝ</a>
+                            }
+                        </li>
                     <li>
-                        <a href="@Url.Action("Dangnhap","Nguoidung")">ĐĂNG NHẬP</a>
-                    </li>
+                         @if (ViewBag.TaiKhoan == null)
+                            {
+                                <a href="@Url.Action("Dangnhap","Nguoidung")">ĐĂNG NHẬP</a>
+                            }
+                        </li>
                     <li>
                         <a href="#">LIÊN HỆ</a>
                     </li>
@@ -67,7 +73,7 @@
                     <li>
                         @if (ViewBag.TaiKhoan != null)
                         {
-                        <a href="@Url.Action("Thongtinnguoidung","Nguoidung", new {id = @ViewBag.TaiKhoan.MaKH})">@ViewBag.TaiKhoan.HoTen</a>
+                        <a style="color:red" href="@Url.Action("Thongtinnguoidung","Nguoidung", new {id = @ViewBag.TaiKhoan.MaKH})">@ViewBag.TaiKhoan.HoTen</a>
                         }
                         </li>
                 </ul>

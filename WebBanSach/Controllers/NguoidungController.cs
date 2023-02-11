@@ -189,6 +189,11 @@ namespace WebBanSach.Controllers
         [HttpGet]
         public ActionResult Dangnhap()
         {
+            var taikhoan = HttpContext.Session.GetObject<KhachHang>("Taikhoan");
+
+            if (taikhoan != null)
+                return RedirectToAction("Index","BookStore");
+
             return View();
         }
         [HttpPost]

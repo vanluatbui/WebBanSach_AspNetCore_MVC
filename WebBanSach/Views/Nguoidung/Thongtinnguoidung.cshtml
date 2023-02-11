@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Suanguoidung";
     //Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    Layout = null;
 }
 
 <h2>XEM HOẶC ĐIỀU CHỈNH THÔNG TIN CỦA BẠN</h2>
@@ -75,11 +76,11 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Đăng xuất", "Logout")
-</div>
-
-<div>
+<h3>
     @Html.ActionLink("Đổi mật khẩu", "ChangePassword", new {email = Model.Email})
-</div>
+</h3>
+
+<h3 style="color:red">
+    @Html.ActionLink("Đăng xuất", "Logout")
+</h3>
 

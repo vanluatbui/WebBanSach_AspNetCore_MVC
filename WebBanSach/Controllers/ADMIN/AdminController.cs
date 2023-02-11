@@ -22,7 +22,14 @@ namespace WebBanSach.Controllers.ADMIN
             if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
+            {
+                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+
+                if (ad != null)
+                    ViewBag.TaiKhoanAdmin = ad;
+
                 return View();
+            }
         }
         [HttpGet]
         public ActionResult Login()
@@ -51,6 +58,14 @@ namespace WebBanSach.Controllers.ADMIN
             }
 
             return View();
+        }
+
+        public ActionResult Logout()
+        {
+            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") != null)
+                HttpContext.Session.SetObject("Taikhoanadmin", null);
+
+                return RedirectToAction("Index", "BookStore");
         }
     }
 }

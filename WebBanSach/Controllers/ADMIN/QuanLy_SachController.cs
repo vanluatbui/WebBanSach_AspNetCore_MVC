@@ -64,6 +64,12 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewBag.TrangHienTai = pageNumber;
                 ViewBag.TongSoTrang = totalPages;
                 ViewBag.SetLink = "/QuanLy_Sach/Sach?pageNumber=";
+
+                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+
+                if (ad != null)
+                    ViewBag.TaiKhoanAdmin = ad;
+
                 return View(pros);
             }
         }
