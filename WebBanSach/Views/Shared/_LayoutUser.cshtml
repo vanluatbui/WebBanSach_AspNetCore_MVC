@@ -73,7 +73,7 @@
                     <li>
                         @if (ViewBag.TaiKhoan != null)
                         {
-                        <a style="color:red" href="@Url.Action("Thongtinnguoidung","Nguoidung", new {id = @ViewBag.TaiKhoan.MaKH})">@ViewBag.TaiKhoan.HoTen</a>
+                        <a style="color:red" href="@Url.Action("Thongtinnguoidung","Nguoidung", new {id = @ViewBag.TaiKhoan.Id})">@ViewBag.TaiKhoan.FullName</a>
                         }
                         </li>
                 </ul>

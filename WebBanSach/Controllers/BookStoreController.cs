@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using WebBanSach.DTO;
 using WebBanSach.Entity;
 using WebBanSach.Extension_Method;
 using WebBanSach.Models;
-using WebBanSach.Models.Admin;
 
 namespace WebBanSach.Controllers
 {
@@ -66,7 +66,7 @@ namespace WebBanSach.Controllers
             ViewBag.TongSoTrang = totalPages;
             ViewBag.SetLink = "/BookStore/Index?pageNumber=";
 
-            var taikhoan = HttpContext.Session.GetObject<KhachHang>("Taikhoan");
+            var taikhoan = HttpContext.Session.GetObject<ApplicationUser>("Taikhoan");
 
             if (taikhoan != null)
                 ViewBag.TaiKhoan = taikhoan;

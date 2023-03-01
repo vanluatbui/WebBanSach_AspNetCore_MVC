@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBanSach.Extension_Method;
-using WebBanSach.Models.Admin;
 using WebBanSach.Models;
 using E_learning;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace WebBanSach.Controllers.ADMIN
 
         public ActionResult Chude(int pageNumber, string? search)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -62,7 +61,7 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewBag.TongSoTrang = totalPages;
                 ViewBag.SetLink = "/QuanLy_ChuDe/Chude?pageNumber=";
 
-                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+                var ad = HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin");
 
                 if (ad != null)
                     ViewBag.TaiKhoanAdmin = ad;
@@ -74,7 +73,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Xoachude(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -86,7 +85,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Xoachude")]
         public ActionResult Xacnhanxoa_ChuDe(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -102,7 +101,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Themmoichude()
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -113,7 +112,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost]
         public ActionResult ThemmoiChude(ChuDe cd)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -128,7 +127,7 @@ namespace WebBanSach.Controllers.ADMIN
         //5 Điều chỉnh thông tin Chủ đề
         public ActionResult Suachude(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -150,7 +149,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Suachude")]
         public ActionResult Xacnhansua_ChuDe(ChuDe cd)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {

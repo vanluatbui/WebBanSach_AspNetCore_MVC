@@ -7,7 +7,6 @@ using System.Web;
 using WebBanSach.Entity;
 using WebBanSach.Models;
 using WebBanSach.Extension_Method;
-using WebBanSach.Models.Admin;
 using System.Runtime.CompilerServices;
 
 namespace Webbansach.Controllers
@@ -162,10 +161,11 @@ namespace Webbansach.Controllers
             }
             return RedirectToAction("GioHang","Giohang");
         }
+
         [HttpGet]
         public ActionResult Dathang()
         {
-            if (HttpContext.Session.GetObject<KhachHang>("Taikhoan") == null || HttpContext.Session.GetObject<KhachHang>("Taikhoan").ToString() == "")
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoan") == null || HttpContext.Session.GetObject<ApplicationUser>("Taikhoan").ToString() == "")
                 return RedirectToAction("Dangnhap", "Nguoidung");
             if (HttpContext.Session.GetObject<List<Giohang>>("Giohang") == null)
                 return RedirectToAction("Index", "BookStore");
@@ -177,10 +177,10 @@ namespace Webbansach.Controllers
 
             // Lấy thông tin khách hàng đang đặt hàng...
 
-            KhachHang kh = HttpContext.Session.GetObject<KhachHang>("Taikhoan");
-            ViewBag.HoTen = kh.HoTen;
-            ViewBag.DiaChi = kh.DiaChi;
-            ViewBag.DienThoai = kh.DienThoai;
+            ApplicationUser kh = HttpContext.Session.GetObject<ApplicationUser>("Taikhoan");
+            ViewBag.HoTen = kh.FullName;
+            ViewBag.DiaChi = kh.Address;
+            ViewBag.DienThoai = kh.PhoneNumber;
 
             return View(lstGiohang);
         }
@@ -191,9 +191,9 @@ namespace Webbansach.Controllers
             //Them Don hang
             DonDatHang ddh = new DonDatHang();
             ddh.MaDonHang = new Guid();
-            KhachHang kh = HttpContext.Session.GetObject<KhachHang>("Taikhoan");
+            ApplicationUser kh = HttpContext.Session.GetObject<ApplicationUser>("Taikhoan");
             List<Giohang> gh = Laygiohang();
-            ddh.MaKH = kh.MaKH;
+            ddh.MaKH = kh.Id;
             ddh.NgayDat = DateTime.Now;
             var ngaygiao = String.Format("{0:MM/dd/yyyy}", collection["Ngaygiao"]);
             ddh.NgayGiao = DateTime.Parse(ngaygiao);

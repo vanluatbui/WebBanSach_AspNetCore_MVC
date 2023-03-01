@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using WebBanSach.Models;
 
-namespace WebBanSach.Models
+namespace WebBanSach.DTO
 {
-    [Table("DonDatHang")]
-    public class DonDatHang
+    public class DonDatHangDTO
     {
         public Guid MaDonHang { get; set; }
         public byte TinhTrangGiaoHang { get; set; }
@@ -12,7 +12,5 @@ namespace WebBanSach.Models
         public DateTime NgayGiao { get; set; }
         public string MaKH { get; set; }
         public ApplicationUser KhachHang { get; set; }
-
-        public List<ChiTiet_DonDatHang> listChiTiet_DDH { get; set; }
     }
 }

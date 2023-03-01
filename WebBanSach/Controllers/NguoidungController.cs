@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using WebBanSach.Models;
 using WebBanSach.Extension_Method;
 using NuGet.Common;
-using WebBanSach.Send_Gmail;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WebBanSach.Models.Admin;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using WebBanSach.DTO;
+using WebBanSach.Send_Gmail;
 
 namespace WebBanSach.Controllers
 {
@@ -14,8 +16,17 @@ namespace WebBanSach.Controllers
     {
         private ApplicationDbContext db;
 
-        public NguoidungController(ApplicationDbContext data)
+        private UserManager<ApplicationUser> userManager { get; set; }
+        private RoleManager<IdentityRole> roleManager { get; set; }
+        private IConfiguration configuration { get; set; }
+        private IMapper mapper { get; set; }
+
+        public NguoidungController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ApplicationDbContext data)
         {
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.configuration = configuration;
+            this.mapper = mapper;
             this.db = data;
         }
 
@@ -27,16 +38,16 @@ namespace WebBanSach.Controllers
 
         // POST: Hàm Dangky(post) Nhận dữ liệu từ trang Dangky và thực hiện việc tạo mới dữ liệu
         [HttpPost]
-        public ActionResult Dangky(IFormCollection collection, KhachHang kh)
+        public async Task<ActionResult> Dangky (IFormCollection collection)
         {
             // Gán các giá tị người dùng nhập liệu cho các biến 
-            var hoten = collection["HotenKH"];
-            var tendn = collection["TenDN"];
-            var matkhau = collection["Matkhau"];
-            var matkhaunhaplai = collection["Matkhaunhaplai"];
-            var diachi = collection["Diachi"];
-            var email = collection["Email"];
-            var dienthoai = collection["Dienthoai"];
+            var hoten = collection["HotenKH"].ToString();
+            var tendn = collection["TenDN"].ToString();
+            var matkhau = collection["Matkhau"].ToString();
+            var matkhaunhaplai = collection["Matkhaunhaplai"].ToString();
+            var diachi = collection["Diachi"].ToString();
+            var email = collection["Email"].ToString();
+            var dienthoai = collection["Dienthoai"].ToString();
             var ngaysinh = String.Format("{0:MM/dd/yyyy}", collection["Ngaysinh"]);
             if (String.IsNullOrEmpty(hoten))
             {
@@ -67,17 +78,44 @@ namespace WebBanSach.Controllers
             {
                 //Gán giá trị cho đối tượng được tạo mới (kh)
 
-                kh.MaKH = new Guid();
-                kh.HoTen = hoten;
-                kh.TaiKhoan = tendn;
-                kh.MatKhau = MD5_Encrypt.MD5_Encrypt.MD5_Password(matkhau);
-                kh.Email = email;
-                kh.DiaChi = diachi;
-                kh.DienThoai = dienthoai;
-                kh.NgaySinh = DateTime.Parse(ngaysinh);
-                db.KhachHangs.Add(kh);
-                db.SaveChanges();
-                return RedirectToAction("Dangnhap", "Nguoidung");
+                try
+                {
+                    if (!await roleManager.RoleExistsAsync("Admin"))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    }
+                    if (!await roleManager.RoleExistsAsync("Guest"))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole("Guest"));
+                    }
+
+                    //------------------------------------------------
+
+                    ApplicationUser user = new ApplicationUser();
+                    user.Id = Guid.NewGuid().ToString();
+                    user.UserName = tendn.ToString();
+                    user.Email = email.ToString();
+
+                    user.PhoneNumber = dienthoai.ToString();
+                    user.Address = diachi.ToString();
+                    user.FullName = hoten.ToString();
+                    user.BirthDate = DateTime.Parse(ngaysinh);
+
+                    PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+                    user.PasswordHash = hasher.HashPassword(user, matkhau.ToString());
+
+
+                    var result = await userManager.CreateAsync(user);
+
+                    await userManager.AddToRoleAsync(user, "Guest");
+
+                    return RedirectToAction("Dangnhap", "Nguoidung");
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+
             }
             return this.Dangky();
         }
@@ -89,14 +127,14 @@ namespace WebBanSach.Controllers
         }
 
         [HttpPost]
-        public ActionResult ForgetPassWord(IFormCollection f)
+        public async Task<ActionResult> ForgetPassWord(IFormCollection f)
         {
             var confirm = f["ConfirmEmail"];
             if (String.IsNullOrEmpty(confirm))
             {
                 ViewData["Loi1"] = "Email khôi phục không được để trống";
             }
-            else if (db.KhachHangs.FirstOrDefault(p => p.Email == confirm.ToString()) == null)
+            else if (await userManager.FindByEmailAsync(confirm) == null)
             {
                 ViewData["Loi1"] = "Email này chưa liên kết tài khoản nào";
             }
@@ -115,13 +153,13 @@ namespace WebBanSach.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConfirmEmail(string email)
+        public async Task<ActionResult> ConfirmEmail(string email)
         {
             ViewBag.Email = email;
             ViewBag.Code = TempData["Code"];
             TempData["Code"] = ViewBag.Code;
 
-            if (db.KhachHangs.FirstOrDefault(p => p.Email == email) == null)
+            if (await userManager.FindByEmailAsync(email) == null)
             {
                 ViewData["Loi1"] = "Email này chưa liên kết tài khoản nào";
                 return this.ForgetPassWord();
@@ -147,7 +185,7 @@ namespace WebBanSach.Controllers
             {
                 return RedirectToAction("ChangePassword", "Nguoidung", new { email = email });
             }
-            return this.ConfirmEmail(email);
+            return RedirectToAction("ConfirmEmail", "Nguoidung", new { email = email });
         }
 
         [HttpGet]
@@ -158,7 +196,7 @@ namespace WebBanSach.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangePassword(IFormCollection f, string email)
+        public async Task<ActionResult> ChangePassword(IFormCollection f, string email)
         {
             var pass = f["Password"];
             var confirm = f["PasswordConfirm"];
@@ -176,10 +214,13 @@ namespace WebBanSach.Controllers
             }
             else
             {
-                KhachHang kh = db.KhachHangs.FirstOrDefault(p => p.Email == email);
-                kh.MatKhau = MD5_Encrypt.MD5_Encrypt.MD5_Password(pass);
-                db.KhachHangs.Update(kh);
-                db.SaveChanges();
+                var kh = await userManager.FindByEmailAsync(email);
+
+                await userManager.RemovePasswordAsync(kh);
+                PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+                kh.PasswordHash = hasher.HashPassword(kh, pass);
+
+                await userManager.UpdateAsync(kh);
 
                 return RedirectToAction("Dangnhap");
             }
@@ -189,18 +230,19 @@ namespace WebBanSach.Controllers
         [HttpGet]
         public ActionResult Dangnhap()
         {
-            var taikhoan = HttpContext.Session.GetObject<KhachHang>("Taikhoan");
+            var taikhoan = HttpContext.Session.GetObject<ApplicationUser>("Taikhoan");
 
             if (taikhoan != null)
                 return RedirectToAction("Index","BookStore");
 
             return View();
         }
+
         [HttpPost]
-        public ActionResult Dangnhap(IFormCollection f)
+        public async Task<ActionResult> Dangnhap(IFormCollection f)
         {
             string tendn = f["TenDN"];
-            string matkhau = MD5_Encrypt.MD5_Encrypt.MD5_Password(f["Matkhau"]);
+            string matkhau = f["Matkhau"];
 
             if (String.IsNullOrEmpty(tendn))
                 ViewData["Loi1"] = "Vui lòng nhập tên đăng nhập";
@@ -208,17 +250,30 @@ namespace WebBanSach.Controllers
                 ViewData["Loi2"] = "Vui lòng nhập mật khẩu";
             else
             {
-
-                var kh = db.KhachHangs.SingleOrDefault(n => n.TaiKhoan == tendn && n.MatKhau == matkhau);
-                if (kh != null)
+                try
                 {
-                    //Session["Taikhoan"] = kh;
-                    HttpContext.Session.SetObject("Taikhoan", kh);
+                    var user = await userManager.FindByNameAsync(tendn.ToString());
 
-                    return RedirectToAction("Index", "BookStore");
+                    if (user == null)
+                    {
+                        ViewBag.Thongbao = "Tên đăng nhập không tồn tại";
+                        return View();
+                    }
+                    var result = await userManager.CheckPasswordAsync(user, matkhau.ToString());
+
+                    if (result)
+                    {
+                        HttpContext.Session.SetObject("Taikhoan", user);
+                        return RedirectToAction("Index", "BookStore");
+
+                    }
+                    else
+                        ViewBag.Thongbao = "Mật khẩu tài khoản này không hợp lệ";
                 }
-                else
-                    ViewBag.Thongbao = "Tên đăng nhập hoặc mật khẩu không hợp lệ";
+                catch (Exception ex)
+                {
+
+                }
             }
 
             return View();
@@ -226,43 +281,47 @@ namespace WebBanSach.Controllers
 
         //--------------------------------------------------------------------------------------
 
-        public ActionResult Thongtinnguoidung(Guid id)
+        public async Task<ActionResult> Thongtinnguoidung (string id)
         {
-            if (HttpContext.Session.GetObject<KhachHang>("Taikhoan") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoan") == null)
                 return RedirectToAction("Dangnhap", "Nguoidung");
             else
             {
-                KhachHang kh = db.KhachHangs.SingleOrDefault(n => n.MaKH == id);
+                var kh = await userManager.FindByIdAsync(id);
 
                 return View(kh);
             }
         }
 
-        private void UpdateModel_KhachHang(KhachHang kh, IFormCollection f)
+        private async Task UpdateModel_KhachHang (ApplicationUser userModel)
         {
-            KhachHang s = db.KhachHangs.FirstOrDefault(p => p.MaKH == kh.MaKH);
+            try
+            {
+                var user = await userManager.FindByNameAsync(userModel.UserName);
 
-            // Cập nhật thông tin khác cho khách hàng...
-            s.TaiKhoan = kh.TaiKhoan;
-            s.NgaySinh = kh.NgaySinh;
-            s.DiaChi = kh.DiaChi;
-            s.DienThoai = kh.DienThoai;
-            s.Email = kh.Email;
-            s.HoTen = kh.HoTen;
+                user.UserName = userModel.UserName; //nếu cần thay đổi Username khác
+                user.Email = userModel.Email;
+                user.FullName = userModel.FullName;
+                user.PhoneNumber = userModel.PhoneNumber;
+                user.Address = userModel.Address;
 
-            //Luu vao CSDL
-            db.KhachHangs.Update(s);
-            db.SaveChanges();
+
+                var result = await userManager.UpdateAsync(user);
+            }
+            catch
+            {
+                
+            }
         }
 
         [HttpPost, ActionName("Suakhachhang")]
-        public ActionResult Xacnhansua_Nguoidung(KhachHang kh, IFormCollection f)
+        public ActionResult Xacnhansua_Nguoidung(ApplicationUser kh, IFormCollection f)
         {
-            if (HttpContext.Session.GetObject<KhachHang>("Taikhoan") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoan") == null)
                 return RedirectToAction("Dangnhap", "Nguoidung");
             else
             {
-                UpdateModel_KhachHang(kh, f);
+                UpdateModel_KhachHang(kh);
                 HttpContext.Session.SetObject("Taikhoan", kh);
                 return RedirectToAction("Index", "BookStore");
             }
@@ -270,7 +329,7 @@ namespace WebBanSach.Controllers
 
         public ActionResult Logout()
         {
-            if (HttpContext.Session.GetObject<KhachHang>("Taikhoan") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoan") == null)
                 return RedirectToAction("Dangnhap", "Nguoidung");
             else
             {

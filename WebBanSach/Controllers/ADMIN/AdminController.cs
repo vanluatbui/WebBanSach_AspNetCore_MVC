@@ -1,29 +1,44 @@
-﻿using E_learning;
+﻿using AutoMapper;
+using E_learning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using WebBanSach.Entity;
+using System.Net;
+using System.Security.Claims;
+using System.Security.Principal;
+using WebBanSach.DTO;
 using WebBanSach.Extension_Method;
 using WebBanSach.Models;
-using WebBanSach.Models.Admin;
 
 namespace WebBanSach.Controllers.ADMIN
 {
     public class AdminController : Controller
     {
-        private ApplicationDbContext data;
-        public AdminController(ApplicationDbContext data)
+        private SignInManager<ApplicationUser> _signInManager { get; set; }
+        private UserManager<ApplicationUser> userManager { get; set; }
+        private RoleManager<IdentityRole> roleManager { get; set; }
+        private IConfiguration configuration { get; set; }
+        private IMapper mapper { get; set; }
+
+        private ApplicationDbContext context { get; set; }
+        public AdminController(SignInManager<ApplicationUser> signInManager,UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper)
         {
-            this.data = data;
+            _signInManager = signInManager;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.configuration = configuration;
+            this.mapper = mapper;
+            this.context = context;
         }
 
-        // GET: Admin
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
-                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+                var ad = HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin");
 
                 if (ad != null)
                     ViewBag.TaiKhoanAdmin = ad;
@@ -31,13 +46,15 @@ namespace WebBanSach.Controllers.ADMIN
                 return View();
             }
         }
+
         [HttpGet]
         public ActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
-        public ActionResult Login(IFormCollection f)
+        public async Task<ActionResult> Login(IFormCollection f)
         {
             var tendn = f["txtuser"];
             var matkhau = f["txtpass"];
@@ -47,14 +64,32 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewData["Loi2"] = "Vui lòng nhập mật khẩu";
             else
             {
-                var ad = data.Admins.SingleOrDefault(n => n.userAdmin == tendn.ToString() && n.passAdmin == MD5_Encrypt.MD5_Encrypt.MD5_Password(matkhau.ToString()));
-                if (ad != null)
+                try
                 {
-                    HttpContext.Session.SetObject("Taikhoanadmin", ad);
-                    return RedirectToAction("Index", "Admin");
+                    var user = await userManager.FindByNameAsync(tendn);
+            
+                    if (user == null)
+                    {
+                        ViewBag.Thongbao = "Tên đăng nhập không tồn tại";
+                        return View();
+                    }
+                    var result = await userManager.CheckPasswordAsync(user, matkhau);
+
+                    if (result)
+                    {
+                        HttpContext.Session.SetObject("Taikhoanadmin", user);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        
+
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    else
+                        ViewBag.Thongbao = "Mật khẩu tài khoản này không hợp lệ";
                 }
-                else
-                    ViewBag.Thongbao = "Tên đăng nhập hoặc mật khẩu không hợp lệ";
+                catch (Exception ex)
+                {
+
+                }
             }
 
             return View();
@@ -62,10 +97,13 @@ namespace WebBanSach.Controllers.ADMIN
 
         public ActionResult Logout()
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") != null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") != null)
                 HttpContext.Session.SetObject("Taikhoanadmin", null);
+            
+            HttpContext.User = new GenericPrincipal(new GenericIdentity(string.Empty), null);
 
-                return RedirectToAction("Index", "BookStore");
+            return RedirectToAction("Index", "BookStore");
         }
+
     }
 }

@@ -1,5 +1,11 @@
 using E_learning;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
+using WebBanSach.Controllers;
+using WebBanSach.Controllers.ADMIN;
+using WebBanSach.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +13,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<ApplicationDbContext>();
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = false;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
 ServiceLifetime.Singleton);
+
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
+options.SignIn.RequireConfirmedAccount = true)
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -32,6 +53,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();

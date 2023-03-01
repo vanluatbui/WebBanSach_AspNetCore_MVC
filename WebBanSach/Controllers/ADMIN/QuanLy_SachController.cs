@@ -1,10 +1,10 @@
 ﻿using E_learning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebBanSach.Entity;
 using WebBanSach.Extension_Method;
 using WebBanSach.Models;
-using WebBanSach.Models.Admin;
 
 namespace WebBanSach.Controllers.ADMIN
 {
@@ -23,7 +23,7 @@ namespace WebBanSach.Controllers.ADMIN
         //1. Hiện thị danh sách các nhà xuất bản
         public ActionResult Sach(int pageNumber, string? search)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -65,7 +65,7 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewBag.TongSoTrang = totalPages;
                 ViewBag.SetLink = "/QuanLy_Sach/Sach?pageNumber=";
 
-                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+                var ad = HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin");
 
                 if (ad != null)
                     ViewBag.TaiKhoanAdmin = ad;
@@ -77,7 +77,7 @@ namespace WebBanSach.Controllers.ADMIN
         //2. Xem chi tiết sách
         public ActionResult Chitietsach(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -89,7 +89,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Xoasach(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -101,7 +101,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Xoasach")]
         public ActionResult Xacnhanxoa_Sach(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -122,7 +122,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Themmoisach()
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -135,7 +135,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost]
         public ActionResult ThemmoiSach(Sach sach, IFormFile fileUpload, IFormCollection f)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -180,7 +180,7 @@ namespace WebBanSach.Controllers.ADMIN
         //5 Điều chỉnh thông tin Sách
         public ActionResult Suasach(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -235,7 +235,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Suasach")]
         public ActionResult Xacnhansua_Sach(Sach sach, IFormCollection f, IFormFile Anhbia)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {

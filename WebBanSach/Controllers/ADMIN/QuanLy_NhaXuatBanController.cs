@@ -1,7 +1,6 @@
 ﻿using E_learning;
 using Microsoft.AspNetCore.Mvc;
 using WebBanSach.Extension_Method;
-using WebBanSach.Models.Admin;
 using WebBanSach.Models;
 using WebBanSach.Entity;
 
@@ -17,7 +16,7 @@ namespace WebBanSach.Controllers.ADMIN
 
         public ActionResult Nhaxuatban(int pageNumber, string? search)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -59,7 +58,7 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewBag.TongSoTrang = totalPages;
                 ViewBag.SetLink = "/QuanLy_NhaXuatBan/Nhaxuatban?pageNumber=";
 
-                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+                var ad = HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin");
 
                 if (ad != null)
                     ViewBag.TaiKhoanAdmin = ad;
@@ -71,7 +70,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Xoanhaxuatban(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -82,7 +81,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Xoanhaxuatban")]
         public ActionResult Xacnhanxoa_NXB(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -98,7 +97,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Themmoinhaxuatban()
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -109,7 +108,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost]
         public ActionResult ThemmoiNhaxuatban(NhaXuatBan nxb)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -126,7 +125,7 @@ namespace WebBanSach.Controllers.ADMIN
         //5 Điều chỉnh thông tin Nhà xuất bản
         public ActionResult Suanhaxuatban(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -151,7 +150,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpPost, ActionName("Suanhaxuatban")]
         public ActionResult Xacnhansua_NXB(NhaXuatBan nxb)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {

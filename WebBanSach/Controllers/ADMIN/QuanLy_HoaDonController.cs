@@ -1,7 +1,6 @@
 ﻿using E_learning;
 using Microsoft.AspNetCore.Mvc;
 using WebBanSach.Extension_Method;
-using WebBanSach.Models.Admin;
 using WebBanSach.Models;
 using WebBanSach.Entity;
 
@@ -18,7 +17,7 @@ namespace WebBanSach.Controllers.ADMIN
 
         public ActionResult Hoadon(int pageNumber, string? search)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -60,7 +59,7 @@ namespace WebBanSach.Controllers.ADMIN
                 ViewBag.TongSoTrang = totalPages;
                 ViewBag.SetLink = "/QuanLy_HoaDon/Hoadon?pageNumber=";
 
-                var ad = HttpContext.Session.GetObject<Admin>("Taikhoanadmin");
+                var ad = HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin");
 
                 if (ad != null)
                     ViewBag.TaiKhoanAdmin = ad;
@@ -72,7 +71,7 @@ namespace WebBanSach.Controllers.ADMIN
         [HttpGet]
         public ActionResult Xoahoadon(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -97,7 +96,7 @@ namespace WebBanSach.Controllers.ADMIN
         // Cập nhật tình trạng thanh toán của hoá dơn...
         public ActionResult CapNhatHoaDon_ThanhToan (Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -119,7 +118,7 @@ namespace WebBanSach.Controllers.ADMIN
         // Cập nhật tình trạng giao hàng của hoá dơn...
         public ActionResult CapNhatHoaDon_GiaoHang(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -141,7 +140,7 @@ namespace WebBanSach.Controllers.ADMIN
         //Xem chi tiết hoá đơn?
         public ActionResult Chitiethoadon(Guid id)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
@@ -153,7 +152,7 @@ namespace WebBanSach.Controllers.ADMIN
         //Xem chi tiết sản phẩm trong hoá đơn
         public ActionResult Chitietsach(Guid id, string strURL)
         {
-            if (HttpContext.Session.GetObject<Admin>("Taikhoanadmin") == null)
+            if (HttpContext.Session.GetObject<ApplicationUser>("Taikhoanadmin") == null)
                 return RedirectToAction("Login", "Admin");
             else
             {
